@@ -4,7 +4,7 @@ from crewai_tools import FileReadTool, FileWriterTool, SerperDevTool, DirectoryR
 file_writer_tool = FileWriterTool()
 file_read_tool = FileReadTool()
 # serper_tool = SerperDevTool()
-directory_read_tool = DirectoryReadTool(directory='/newest_reports')
+directory_read_tool = DirectoryReadTool(directory='newest_reports')
 
 # If you want to run a snippet of code before or after the crew starts, 
 # you can use the @before_kickoff and @after_kickoff decorators
@@ -28,7 +28,8 @@ class StrResearchAgent():
 			config=self.agents_config['research_agent'],
 			tools=[file_writer_tool, file_read_tool],
 			allow_code_execution=True,
-			allow_delegation=True
+			allow_delegation=True,
+			max_retry_limit=5
 		)
 	@agent
 	def reporting_agent(self) -> Agent:

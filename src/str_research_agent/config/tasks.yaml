@@ -4,16 +4,16 @@ research_task:
     on the internet with the purpose of discovering emerging trends in {topic} real estate market 
     given the current month and year is December 2024.
   expected_output: >
-    Two files both saved to the "newest_reports" directory: one markdown file containing robust research, so the reporting_task
-    can use that research to create a written report and any csv files with data written to them
-    that will be used by the chart_task to create matplotlib charts.
+    Two files both saved to the "newest_reports" directory: one markdown file containing bullet points of 
+    robust well thought-out and detailed research, so the reporting_task
+    can use that research to create a written report and one csv file used by the chart_task to create matplotlib charts.
   agent: research_agent
 
 chart_task:
   description: >
-    Create labeled Matplotlib charts from any csv files created by the research_task which have been
-    saved to the "newest_reports" directory.
-    In the charts make sure to use useful descriptive data labels that describe the data.
+    Create labeled Matplotlib charts from csv file that was created by the research_task only once the research_task is complete
+    then save the finished charts to the "newest_reports" directory.
+    Make sure to use data labels that describe the data, so investors can use that data to invest.
   expected_output: >
     Matplotlib charts saved in "newest_reports" directory.
   context: [research_task]
@@ -21,7 +21,7 @@ chart_task:
 
 reporting_task:
   description: >
-    Review the data and research files located in the "newest_reports" directory and if you have questions ask the research_agent.
+    Review the data and research files located in the "newest_newest_reports" directory and if you have questions ask the research_agent.
     After reviewing the data and research, write the report and expand each topic into a full section for a report with a
     full paragraph at minimum for each section.
     Make sure your report contains relevant information, data, or charts that investors need to make smarter investments in {topic}.
