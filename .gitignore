@@ -1,0 +1,9 @@
+.env
+__pycache__/
+data/
+None/
+.venv/
+store/
+test_output.txt
+uv.lock
+README.md

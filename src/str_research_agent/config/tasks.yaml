@@ -1,0 +1,32 @@
+research_task:
+  description: >
+    Research and analyze blog posts, podcasts, raw data, market research and other relevant {topic} information you can find
+    on the internet with the purpose of discovering emerging trends in {topic} real estate market 
+    given the current month and year is December 2024.
+  expected_output: >
+    Two files both saved to the "reports" directory: one markdown file containing robust research, so the reporting_task
+    can use that research to create a written report and one csv file used by the chart_task to create matplotlib charts.
+  agent: research_agent
+
+chart_task:
+  description: >
+    Create labeled Matplotlib charts from csv file that was created by the research_task
+    and save the finished charts to the "reports" directory.
+    Make sure to use data labels that describe the data, so investors can use that data to invest.
+  expected_output: >
+    Matplotlib charts saved in "reports" directory.
+  context: [research_task]
+  agent: reporting_agent
+
+reporting_task:
+  description: >
+    Review the data and research files located in the "reports" directory and if you have questions ask the research_agent.
+    After reviewing the data and research, write the report and expand each topic into a full section for a report with a
+    full paragraph at minimum for each section.
+    Make sure your report contains relevant information, data, or charts that investors need to make smarter investments in {topic}.
+  expected_output: >
+    A fully fledged market insights report with at least 5 sentences per section 
+    which includes Matplotlib charts for relevant sections.
+    Formatted as markdown without '```' and save the markdown report to the "reports" directory.
+  context: [research_task, chart_task]
+  agent: reporting_agent
