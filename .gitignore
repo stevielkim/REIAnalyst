@@ -7,6 +7,7 @@ store/
 test_output.txt
 uv.lock
 README.md
-reports/
+knowledge/
+old_reports/
 str_crew_log.txt
 db/
