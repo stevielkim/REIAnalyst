@@ -1,33 +1,70 @@
 research_task:
   description: >
-    Research and analyze blog posts, podcasts, raw data, market research and other relevant {topic} information you can find
-    on the internet with the purpose of discovering emerging trends in {topic} real estate market 
-    given the current month and year is December 2024.
+    Research and conduct a thorough analysis of {topic} U.S. market trends and investment opportunities for the year 2025.
+    Analyze economic indicators and growth projections that highlight promising investment areas.
+    Conduct research from a variety of data sources such as: blog posts, podcasts, market research and analysis to 
+    find insights on the most promising cities to invest in for the year 2025 and the key metrics used to analyze these cities.
+    Gather research for potential cities to invest in for {topic} in the U.S. market and search for
+    key {topic} metrics per city. 
+    Examples of key city metrics include: average daily price, occupancy rate, revenue per available room, and other relevant performance
+    metrics that are used to analyze cities for investment opportunities in the U.S. {topic} market. 
+    Create the "blog_reports" directory if it doesn't exist.
+    Save all your analysis, research, and raw data to the "str_blog_reports" directory for further analysis.
+    This research and analysis is very important to investors such as myself who are looking for the best cities to invest in for the year 2025.
+    It will help us save time and get better returns on our investments which is critical in this soft {topic} market.
   expected_output: >
-    Two files both saved to the "newest_reports" directory: one markdown file containing bullet points of 
-    robust well thought-out and detailed research, so the reporting_task
-    can use that research to create a written report and one csv file used by the chart_task to create matplotlib charts.
+    Include a list of citations for all sources used in a markdown file in the "str_blog_reports" directory.
+    Share the raw data with key metrics with the data_task for further analysis.
+    Do not end your task until you have written all files to the "str_blog_reports" directory.
+  # output_file: str_blog_reports/
+  create_directory: True
   agent: research_agent
+
+data_task:
+  description: >
+    Review context from the {topic} Senior Data Researcher and the research files in the "str_blog_reports" directory.
+    Analyze and compile raw data from the research_task and create csv files for U.S. city and regions for common {topic} metrics including, but not limited to:
+    average daily price, occupancy rate, revenue per available room, and other relevant performance indicators for the U.S. {topic} market.
+    Utilize only real data compiled from the research_task - do not simulate data. 
+    Request assistance from the Research Agent if specific data points are missing for any of the required metrics.
+    This is the most critical task to get correct, because the data you provide will be used to create Matplotlib charts in the chart_task
+    and without accurate data, the charts will not be useful for investors and could lead to poor investment decisions.
+  expected_output: >
+    Create csv files from raw data you found in your {topic} search and from the research_task context and the files in "str_blog_reports"
+    and make sure it is clean and organized and is useful for creating Matplotlib charts.
+    Cite all your sources and save a list of those citations in a separate markdown file in the "str_blog_reports" directory.
+    # Structure the data to be compatible with the creation of Matplotlib charts that will be created in the chart_task. 
+  # output_file: str_blog_reports/
+  context: [research_task]
+  agent: research_agent
+
 
 chart_task:
   description: >
-    Create labeled Matplotlib charts from csv file that was created by the research_task only once the research_task is complete
-    then save the finished charts to the "newest_reports" directory.
-    Make sure to use data labels that describe the data, so investors can use that data to invest.
+    Review the context you got and the research and data files located in the "str_blog_reports" directory.
+    Create Matplotlib charts from the data provided by the Research Agent and include them in the relevant sections of the report.
+    The charts should have useful descriptive data labels that describe the data and at the bottom of the report cite sources used to create charts.
+    This task is so important and will help investors understand the key metrics used to analyze {topic} trends and investment opportunities.
   expected_output: >
-    Matplotlib charts saved in "newest_reports" directory.
-  context: [research_task]
+    Use data files located in the "str_blog_reports" directory to create Matplotlib charts for each relevant section of the report.
+    Use relevant data such as the key city metrics like: average daily price, occupancy rate, revenue per available room, 
+    and other relevant performance indicators.
+    Use descriptive data labels that tell what cities investors should consider for investment opportunities.
+  # output_file: str_blog_reports/
+  context: [research_task, data_task]
   agent: reporting_agent
 
 reporting_task:
   description: >
-    Review the data and research files located in the "newest_newest_reports" directory and if you have questions ask the research_agent.
-    After reviewing the data and research, write the report and expand each topic into a full section for a report with a
-    full paragraph at minimum for each section.
-    Make sure your report contains relevant information, data, or charts that investors need to make smarter investments in {topic}.
+    Review the context, the data and the research files located in the "str_blog_reports" directory
+    After reviewing the research, write the report and expand each topic into a full section for a report with at least 5 sentences per section.
+    Make sure your report contains relevant information, data, or charts for investors interested in {topic} trends and opportunities.
+    This task is critical to the outcomes of this analysis because it creates the final report that investors will use to 
+    make decisions on where to invest in the U.S. {topic} market.
   expected_output: >
-    A fully fledged market insights report with at least 5 sentences per section 
-    which includes Matplotlib charts for relevant sections.
-    Formatted as markdown without '```' and save the markdown report to the "newest_reports" directory.
-  context: [research_task, chart_task]
+    A detailed market insights report with at least 5 sentences per section with embedded Matplotlib charts
+    within the report for each relevant section.
+    Formatted as markdown without '```' and save the markdown report to the "str_blog_reports" directory.
+  # output_file: str_blog_reports/
+  context: [research_task, chart_task, data_task]
   agent: reporting_agent

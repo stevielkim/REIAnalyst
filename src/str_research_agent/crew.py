@@ -1,10 +1,17 @@
-from crewai import Agent, Crew, Process, Task
+from crewai import Agent, Crew, Process, Task,LLM
 from crewai.project import CrewBase, agent, crew, task
-from crewai_tools import FileReadTool, FileWriterTool, SerperDevTool, DirectoryReadTool
-file_writer_tool = FileWriterTool()
-file_read_tool = FileReadTool()
-# serper_tool = SerperDevTool()
-directory_read_tool = DirectoryReadTool(directory='newest_reports')
+from crewai_tools import FileReadTool, FileWriterTool, SerperDevTool, DirectoryReadTool, WebsiteSearchTool
+web_search_tool = WebsiteSearchTool()
+file_writer_tool = FileWriterTool(directory='str_blog_reports')
+file_read_tool = FileReadTool(directory='str_blog_reports')
+serper_tool = SerperDevTool()
+directory_read_tool = DirectoryReadTool(directory='str_blog_reports')
+
+llm = LLM(
+    model="gpt-4o",
+    temperature=0.4,
+	timeout=150
+)
 
 # If you want to run a snippet of code before or after the crew starts, 
 # you can use the @before_kickoff and @after_kickoff decorators
@@ -26,18 +33,23 @@ class StrResearchAgent():
 	def research_agent(self) -> Agent:
 		return Agent(
 			config=self.agents_config['research_agent'],
-			tools=[file_writer_tool, file_read_tool],
+			llm=llm,
+			tools=[file_writer_tool, file_read_tool,directory_read_tool,serper_tool,web_search_tool],
 			allow_code_execution=True,
 			allow_delegation=True,
+			max_execution_time=300,
 			max_retry_limit=5
 		)
 	@agent
 	def reporting_agent(self) -> Agent:
 		return Agent(
 			config=self.agents_config['reporting_agent'],
-			tools=[file_writer_tool, file_read_tool, directory_read_tool],
+			llm=llm,
+			tools=[file_writer_tool, file_read_tool,directory_read_tool],
 			allow_code_execution=True,
-			allow_delegation=True
+			allow_delegation=True,
+			max_execution_time=300,
+			max_retry_limit=5
 		)
 
 
@@ -48,6 +60,11 @@ class StrResearchAgent():
 	def research_task(self) -> Task:
 		return Task(
 			config=self.tasks_config['research_task']
+		)
+	@task
+	def data_task(self) -> Task:
+		return Task(
+			config=self.tasks_config['data_task']
 		)
 	@task
 	def chart_task(self) -> Task:
@@ -70,6 +87,8 @@ class StrResearchAgent():
 			tasks=self.tasks, # Automatically created by the @task decorator
 			process=Process.sequential,
 			planning=True,
-			verbose=True
+			verbose=True,
+			output_log_file="str_crew_log.txt",
+			memory=True
 			# process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
 		)

@@ -8,3 +8,5 @@ test_output.txt
 uv.lock
 README.md
 reports/
+str_crew_log.txt
+db/
